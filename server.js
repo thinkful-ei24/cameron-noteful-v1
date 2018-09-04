@@ -13,12 +13,18 @@ const app = express();
 app.use(express.static('public'));
 
 app.get('/api/notes', (req, res) => {
-  res.json(data);
+  const query = req.query;
+  let list = data;
+
+  if(query.searchTerm){
+    list = list.filter(i => i.title.includes(query.searchTerm));
+  }
+  return res.json(list);
 });
 
 app.get('/api/notes/:id', (req, res) => {
   const item = data.find(i => i.id === Number(req.params.id));
-  res.json(item);
+  return res.json(item);
 });
 
 app.listen(8080, function(){
