@@ -11,11 +11,17 @@ console.log('Hello Noteful!');
 // INSERT EXPRESS APP CODE HERE...
 const express = require('express');
 
+// Create an Express application
 const app = express();
 
+// Log all requests
+app.use(requestLogger);
+
+// Create a static webserver
 app.use(express.static('public'));
 
-app.use(requestLogger);
+// Parse request body
+app.use(express.json());
 
 app.get('/api/notes', (req, res, next) => {
   const { searchTerm } = req.query;
@@ -34,6 +40,29 @@ app.get('/api/notes/:id', (req, res, next) => {
       return next(err);
     }
     res.json(item);
+  });
+});
+
+app.put('/api/notes/:id', (req, res, next) => {
+  const { id  } = req.params;
+
+  const updateObj = {};
+  const updateFields = ['title', 'content'];
+  updateFields.forEach(field => {
+    if (field in req.body){
+      updateObj[field] = req.body[field];
+    }
+  });
+
+  notes.update(id, updateObj, (err, item) => {
+    if (err){
+      return next(err);
+    }
+    if (item) {
+      res.json(item);
+    } else {
+      next();
+    }
   });
 });
 
