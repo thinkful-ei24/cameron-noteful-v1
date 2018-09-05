@@ -2,7 +2,8 @@
 
 // Load array of notes
 const data = require('./db/notes');
-const {PORT} = require('./config');
+const { PORT  } = require('./config');
+const { requestLogger } = require('./middleware/logger');
 console.log('Hello Noteful!');
 
 // INSERT EXPRESS APP CODE HERE...
@@ -11,6 +12,8 @@ const express = require('express');
 const app = express();
 
 app.use(express.static('public'));
+
+app.use(requestLogger);
 
 app.get('/api/notes', (req, res) => {
   const query = req.query;
