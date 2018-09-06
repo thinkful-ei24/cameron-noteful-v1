@@ -10,18 +10,19 @@ console.log('Hello Noteful!');
 
 // INSERT EXPRESS APP CODE HERE...
 const express = require('express');
-
+const morgan = require('morgan');
 // Create an Express application
 const app = express();
 
 // Log all requests
-app.use(requestLogger);
+app.use(morgan('dev'));
 
 // Create a static webserver
 app.use(express.static('public'));
 
 // Parse request body
 app.use(express.json());
+
 
 app.get('/api/notes', (req, res, next) => {
   const { searchTerm } = req.query;
