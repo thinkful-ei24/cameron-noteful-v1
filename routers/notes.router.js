@@ -78,9 +78,9 @@ notesRouter.put('/notes/:id', (req, res, next) => {
 notesRouter.delete('/notes/:id', (req, res, next) => {
   const { id  } = req.params;
 
-  notes.delete(id, (err, len) => {
+  notes.delete(id, (err) => {
     if (err){
-      return res.status(500).json(err);
+      return next(err);
     }
     return res.sendStatus(204);
   });
