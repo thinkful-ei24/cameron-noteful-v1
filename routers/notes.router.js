@@ -9,7 +9,7 @@ const notes = simDB.initialize(data);
 
 const notesRouter = express.Router();
 
-notesRouter.get('/notes', (req, res, next) => {
+notesRouter.get('/', (req, res, next) => {
   const { searchTerm } = req.query;
   notes.filter(searchTerm, (err,list) => {
     if(err){
@@ -19,7 +19,7 @@ notesRouter.get('/notes', (req, res, next) => {
   });
 });
 
-notesRouter.get('/notes/:id', (req, res, next) => {
+notesRouter.get('/:id', (req, res, next) => {
   const { id  } = req.params;
   notes.find(id, (err, item) => {
     if(err){
@@ -29,7 +29,7 @@ notesRouter.get('/notes/:id', (req, res, next) => {
   });
 });
 
-notesRouter.post('/notes', (req, res, next) => {
+notesRouter.post('/', (req, res, next) => {
   const {title, content} = req.body;
 
   const newItem = {title, content};
@@ -52,7 +52,7 @@ notesRouter.post('/notes', (req, res, next) => {
   });
 });
 
-notesRouter.put('/notes/:id', (req, res, next) => {
+notesRouter.put('/:id', (req, res, next) => {
   const { id  } = req.params;
 
   const updateObj = {};
@@ -75,7 +75,7 @@ notesRouter.put('/notes/:id', (req, res, next) => {
   });
 });
 
-notesRouter.delete('/notes/:id', (req, res, next) => {
+notesRouter.delete('/:id', (req, res, next) => {
   const { id  } = req.params;
 
   notes.delete(id, (err) => {
