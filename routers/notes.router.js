@@ -11,22 +11,28 @@ const notesRouter = express.Router();
 
 notesRouter.get('/', (req, res, next) => {
   const { searchTerm } = req.query;
-  notes.filter(searchTerm, (err,list) => {
-    if(err){
+  notes.filter(searchTerm)
+    .then(list => {
+      res.json(list);
+    })
+    .catch(err => {
       return next(err);
-    }
-    res.json(list);
-  });
+    }); 
 });
 
 notesRouter.get('/:id', (req, res, next) => {
   const { id  } = req.params;
-  notes.find(id, (err, item) => {
-    if(err){
+  notes.find(id)
+    .then(item => {
+      if (item){
+        res.json(item);
+      }else {
+        next();
+      }
+    })
+    .catch(err => {
       return next(err);
-    }
-    res.json(item);
-  });
+    });
 });
 
 notesRouter.post('/', (req, res, next) => {
@@ -40,16 +46,17 @@ notesRouter.post('/', (req, res, next) => {
     return next(err);
   }
 
-  notes.create(newItem, (err, item) => {
-    if (err) {
+  notes.create(newItem)
+    .then(item => {
+      if (item){
+        res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item);
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
       return next(err);
-    }
-    if (item){
-      res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item);
-    } else {
-      next();
-    }
-  });
+    });
 });
 
 notesRouter.put('/:id', (req, res, next) => {
@@ -63,27 +70,29 @@ notesRouter.put('/:id', (req, res, next) => {
     }
   });
 
-  notes.update(id, updateObj, (err, item) => {
-    if (err){
+  notes.update(id, updateObj)
+    .then(item => {
+      if (item) {
+        res.json(item);
+      } else {
+        next();
+      }
+    })
+    .catch(err => {
       return next(err);
-    }
-    if (item) {
-      res.json(item);
-    } else {
-      next();
-    }
-  });
+    }); 
 });
 
 notesRouter.delete('/:id', (req, res, next) => {
   const { id  } = req.params;
 
-  notes.delete(id, (err) => {
-    if (err){
+  notes.delete(id)
+    .then(() => {
+      return res.sendStatus(204);
+    })
+    .catch(err => {
       return next(err);
-    }
-    return res.sendStatus(204);
-  });
+    });
 });
 
 module.exports = {
